@@ -15,6 +15,9 @@ namespace Shared.Models
         [JsonProperty("code")]
         public string Code { get; set; }
 
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
         public class SessionData
         {
             [JsonProperty("session_id")]
