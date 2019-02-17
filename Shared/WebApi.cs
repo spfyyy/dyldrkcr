@@ -13,7 +13,7 @@ namespace Shared
         /// </summary>
         /// <param name="deviceId">A GUID for this device. Can be generated if one isn't already saved.</param>
         /// <param name="auth">If specified and valid, will start a logged in session.</param>
-        /// <returns>An awaitable Crunchyroll Session.</returns>
+        /// <returns>An awaitable Crunchyroll <see cref="Session"/>.</returns>
         public static async Task<Session> StartSessionAsync(string deviceId, string auth)
         {
             var encodedDeviceId = HttpUtility.UrlEncode(deviceId);
@@ -34,7 +34,7 @@ namespace Shared
         /// <param name="account">The login name, either username or email.</param>
         /// <param name="password">The login password.</param>
         /// <param name="sessionId">The session ID to upgrade.</param>
-        /// <returns></returns>
+        /// <returns>An awaitable Crunchyroll <see cref="Login"/>.</returns>
         public static async Task<Login> LoginAsync(string account, string password, string sessionId)
         {
             var encodedAccount = HttpUtility.UrlEncode(account);
@@ -51,7 +51,7 @@ namespace Shared
         /// </summary>
         /// <typeparam name="T">The type of object to try and parse from the response.</typeparam>
         /// <param name="request">The HTTP request.</param>
-        /// <returns>An instance of <typeparamref name="T"/>.</returns>
+        /// <returns>An awaitable instance of <typeparamref name="T"/>.</returns>
         private static async Task<T> WebRequestAsync<T>(HttpRequestMessage request)
         {
             using (var client = new HttpClient())
