@@ -9,10 +9,13 @@ namespace Shared.Models
         public LoginData Data { get; set; }
 
         [JsonProperty("error")]
-        public string Error { get; set; }
+        public bool Error { get; set; }
 
         [JsonProperty("code")]
         public string Code { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
 
         public class LoginData
         {

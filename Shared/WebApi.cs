@@ -47,6 +47,20 @@ namespace Shared
         }
 
         /// <summary>
+        /// Get the watch queue for the user of the given session ID.
+        /// </summary>
+        /// <param name="sessionId">The session ID of the current user.</param>
+        /// <returns>An awaitable Crunchyroll <see cref="Queue"/>.</returns>
+        public static async Task<Queue> GetQueueAsync(string sessionId)
+        {
+            var encodedSessionId = HttpUtility.UrlEncode(sessionId);
+            var url = $"https://api.crunchyroll.com/queue.0.json?session_id={encodedSessionId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var queue = await WebRequestAsync<Queue>(request);
+            return queue;
+        }
+
+        /// <summary>
         /// Helper method for sending a REST API request.
         /// </summary>
         /// <typeparam name="T">The type of object to try and parse from the response.</typeparam>

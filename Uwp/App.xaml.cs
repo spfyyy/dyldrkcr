@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Shared;
-using System;
-using System.Diagnostics;
+﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -64,9 +61,6 @@ namespace Uwp
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
-
-            var session = await WebApi.StartSessionAsync("8bb4905c-1f84-455b-922d-cf4b41d2157f", null);
-            Debug.WriteLine(JsonConvert.SerializeObject(session));
         }
 
         /// <summary>
