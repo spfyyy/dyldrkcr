@@ -61,6 +61,22 @@ namespace Shared
         }
 
         /// <summary>
+        /// Get the media info/metadata using a media ID and a session ID.
+        /// </summary>
+        /// <param name="mediaId">The ID of the request media.</param>
+        /// <param name="sessionId">The session ID of the current user. If the user is not premium, it will affect the number of streams returned. 0 if the video is premium-only.</param>
+        /// <returns>An awaitable Crunchyroll <see cref="MediaInfo"/>.</returns>
+        public static async Task<MediaInfo> GetMediaInfo(string mediaId, string sessionId)
+        {
+            var encodedMediaId = HttpUtility.UrlEncode(mediaId);
+            var encodedSessionId = HttpUtility.UrlEncode(sessionId);
+            var url = $"https://api.crunchyroll.com/info.0.json?media_id={encodedMediaId}&session_id={encodedSessionId}&fields=media.stream_data";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var info = await WebRequestAsync<MediaInfo>(request);
+            return info;
+        }
+
+        /// <summary>
         /// Helper method for sending a REST API request.
         /// </summary>
         /// <typeparam name="T">The type of object to try and parse from the response.</typeparam>
