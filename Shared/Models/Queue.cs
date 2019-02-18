@@ -25,11 +25,20 @@ namespace Shared.Models
             [JsonProperty("ordering")]
             public int Ordering { get; set; }
 
+            [JsonProperty("series")]
+            public Series Series { get; set; }
+
             [JsonProperty("playhead")]
             public int Playhead { get; set; }
 
+            [JsonProperty("last_watched_media")]
+            public Media LastWatched { get; set; }
+
             [JsonProperty("last_watched_media_playhead")]
             public int? LastWatchedPlayhead { get; set; }
+
+            [JsonProperty("most_likely_media")]
+            public Media MostLikely { get; set; }
 
             [JsonProperty("most_likely_media_playhead")]
             public int MostLikelyPlayhead { get; set; }
