@@ -16,7 +16,7 @@ namespace Shared
         /// </summary>
         /// <typeparam name="T">The type of the singleton.</typeparam>
         /// <param name="singleton">The instance of the singleton.</param>
-        public static void RegisterSingleton<T>(object singleton) where T : class
+        public static void RegisterSingleton<T>(T singleton) where T : class
         {
             _singletons.Add(typeof(T), singleton);
         }
@@ -26,7 +26,7 @@ namespace Shared
         /// </summary>
         /// <typeparam name="T">The type of the scoped instance.</typeparam>
         /// <param name="factory">The method to use for creating the instance.</param>
-        public static void RegisterScoped<T>(Func<object> factory) where T : class
+        public static void RegisterScoped<T>(Func<T> factory) where T : class
         {
             _scoped.Add(typeof(T), factory);
         }
