@@ -4,9 +4,11 @@ namespace Shared.ViewModels
 {
     public class LaunchPageViewModel : BaseViewModel
     {
-        private readonly ISettings _settings = Ioc.Get<ISettings>();
-        public LaunchPageViewModel()
+        private readonly ISettings _settings;
+
+        public LaunchPageViewModel(ISettings settings)
         {
+            _settings = settings;
             StartSession();
         }
 

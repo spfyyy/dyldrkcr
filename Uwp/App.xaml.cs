@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shared;
+using Shared.ViewModels;
+using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -19,7 +21,17 @@ namespace Uwp
         public App()
         {
             // Configure services.
-            Shared.Ioc.RegisterSingleton<Shared.ISettings>(new UwpSettings());
+            Ioc.RegisterSingleton<ISettings>(new UwpSettings());
+            Ioc.RegisterScoped(() =>
+            {
+                return new LaunchPageViewModel(Ioc.Get<ISettings>());
+            });
+            Ioc.RegisterScoped(() =>
+            {
+                return new LoginPageViewModel();
+            });
+            Ioc.RegisterSingleton(new ApplicationViewModel());
+            Ioc.Get<ApplicationViewModel>().Start();
 
             InitializeComponent();
             Suspending += OnSuspending;
