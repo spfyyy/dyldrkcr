@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Shared.ViewModels
@@ -13,6 +14,18 @@ namespace Shared.ViewModels
             {
                 _queue = value;
                 NotifyPropertyChanged(nameof(Queue));
+            }
+        }
+
+        private QueueItemViewModel _selectedItem;
+        public QueueItemViewModel SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                Debug.WriteLine("Picked a new item.");
+                NotifyPropertyChanged(nameof(SelectedItem));
             }
         }
 
