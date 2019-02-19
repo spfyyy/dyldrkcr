@@ -28,7 +28,7 @@ namespace Uwp
             });
             Ioc.RegisterScoped(() =>
             {
-                return new LoginPageViewModel();
+                return new LoginPageViewModel(Ioc.Get<ISettings>());
             });
             Ioc.RegisterSingleton(new ApplicationViewModel());
             Ioc.Get<ApplicationViewModel>().Start();

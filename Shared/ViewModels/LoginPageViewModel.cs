@@ -1,26 +1,72 @@
-﻿namespace Shared.ViewModels
+﻿using Shared.Utilities;
+using System.Diagnostics;
+
+namespace Shared.ViewModels
 {
     public class LoginPageViewModel : BaseViewModel
     {
-        private string account;
-        public string Account
+        private readonly ISettings _settings;
+
+        private bool _loggingIn;
+        private bool LoggingIn
         {
-            get { return account; }
+            get { return _loggingIn; }
             set
             {
-                account = value;
-                NotifyPropertyChanged(nameof(Account));
+                _loggingIn = value;
+                LoginCommand.NotifyCanExecuteChanged();
             }
         }
 
-        private string password;
-        public string Password
+        private string _account = "";
+        public string Account
         {
-            get { return password; }
+            get { return _account; }
             set
             {
-                password = value;
+                _account = value;
+                NotifyPropertyChanged(nameof(Account));
+                LoginCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        private string _password = "";
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                _password = value;
                 NotifyPropertyChanged(nameof(Password));
+                LoginCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        public LoginPageViewModel(ISettings settings)
+        {
+            _settings = settings;
+            LoginCommand = new RelayCommand(CanLogin, Login);
+            LoggingIn = false;
+        }
+
+        public RelayCommand LoginCommand { get; set; }
+        private bool CanLogin(object _)
+        {
+            return Account.Length > 0 && Password.Length > 0 && !LoggingIn;
+        }
+        private async void Login(object _)
+        {
+            LoggingIn = true;
+            var login = await WebApi.LoginAsync(Account, Password, Application.Session.Data.SessionId);
+            if (!login.Error)
+            {
+                _settings.Save(SettingsKey.AUTH_TOKEN, login.Data.Auth);
+                Application.Session.Data.User = login.Data.User;
+                Debug.WriteLine("Logged in!");
+            }
+            else
+            {
+                LoggingIn = false;
             }
         }
     }
