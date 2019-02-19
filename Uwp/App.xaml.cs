@@ -30,6 +30,10 @@ namespace Uwp
             {
                 return new LoginPageViewModel(Ioc.Get<ISettings>());
             });
+            Ioc.RegisterScoped(() =>
+            {
+                return new QueuePageViewModel();
+            });
             Ioc.RegisterSingleton(new ApplicationViewModel());
             Ioc.Get<ApplicationViewModel>().Start();
 

@@ -1,0 +1,34 @@
+﻿<Page
+    x:Class="Uwp.Pages.QueuePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:converters="using:Uwp.Converters"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <converters:PercentageToWidthDescriptionConverter x:Key="PercentToWidth" />
+    </Page.Resources>
+    
+    <Grid>
+        <ListView ItemsSource="{Binding Queue}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="8" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{Binding WatchPercentage, Converter={StaticResource PercentToWidth}, ConverterParameter=false}" />
+                            <ColumnDefinition Width="{Binding WatchPercentage, Converter={StaticResource PercentToWidth}, ConverterParameter=true}" />
+                        </Grid.ColumnDefinitions>
+                        <Image Source="{Binding ThumbnailUrl}" Grid.ColumnSpan="2" />
+                        <Rectangle Fill="Blue" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>
