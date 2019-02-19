@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace Shared.ViewModels
 {
@@ -7,6 +8,11 @@ namespace Shared.ViewModels
     /// </summary>
     public class BaseViewModel : INotifyPropertyChanged
     {
+        protected ApplicationViewModel Application
+        {
+            get { return Ioc.Get<ApplicationViewModel>(); }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged(string property)
         {
