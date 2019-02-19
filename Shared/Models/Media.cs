@@ -82,5 +82,17 @@ namespace Shared.Models
 
         [JsonProperty("created")]
         public DateTime Created { get; set; }
+
+        [JsonProperty("duration")]
+        public int Duration { get; set; }
+
+        [JsonProperty("series_name")]
+        public string SeriesName { get; set; }
+
+        [JsonProperty("premium_only")]
+        public bool PremiumOnly { get; set; }
+
+        [JsonProperty("playhead")]
+        public int Playhead { get; set; }
     }
 }

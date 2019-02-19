@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Shared.ViewModels
 {
@@ -31,8 +30,7 @@ namespace Shared.ViewModels
             }
             else
             {
-                // Logged in. Go to queue?
-                Debug.WriteLine("Logged in!");
+                Application.Navigate<QueuePageViewModel>();
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Shared.Utilities;
-using System.Diagnostics;
 
 namespace Shared.ViewModels
 {
@@ -62,7 +61,7 @@ namespace Shared.ViewModels
             {
                 _settings.Save(SettingsKey.AUTH_TOKEN, login.Data.Auth);
                 Application.Session.Data.User = login.Data.User;
-                Debug.WriteLine("Logged in!");
+                Application.Navigate<QueuePageViewModel>();
             }
             else
             {
