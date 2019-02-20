@@ -11,8 +11,6 @@ namespace Shared.Models
 
         [JsonProperty("audio_lang")]
         public string AudioLanguage { get; set; }
-        [JsonProperty("format")]
-        public string Format { get; set; }
 
         [JsonProperty("streams")]
         public List<Stream> Streams { get; set; }

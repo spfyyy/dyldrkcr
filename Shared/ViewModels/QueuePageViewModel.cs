@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Shared.ViewModels
@@ -24,7 +23,6 @@ namespace Shared.ViewModels
             set
             {
                 _selectedItem = value;
-                Debug.WriteLine("Picked a new item.");
                 NotifyPropertyChanged(nameof(SelectedItem));
             }
         }

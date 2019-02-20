@@ -5,6 +5,6 @@
     /// </summary>
     public enum SettingsKey
     {
-        DEVICE_ID, AUTH_TOKEN
+        DEVICE_ID, AUTH_TOKEN, VOLUME
     }
 }
