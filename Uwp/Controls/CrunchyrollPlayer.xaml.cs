@@ -1,8 +1,10 @@
 ﻿using Shared.ViewModels;
 using System;
+using System.Linq;
 using System.Windows.Input;
 using Windows.Media.Core;
 using Windows.Media.Playback;
+using Windows.Media.Streaming.Adaptive;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -74,7 +76,7 @@ namespace Uwp.Controls
             });
         }
 
-        private static void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        private static async void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
         {
             var control = d as CrunchyrollPlayer;
             var viewModel = args.NewValue as MediaViewModel;
@@ -84,15 +86,19 @@ namespace Uwp.Controls
                 control.Player.SetMediaPlayer(null);
                 return;
             }
+            var sourceResult = await AdaptiveMediaSource.CreateFromUriAsync(new Uri(viewModel.Url));
+            var source = sourceResult.MediaSource;
+            source.DesiredMinBitrate = source.AvailableBitrates.Max();
             var player = new MediaPlayer
             {
-                Source = MediaSource.CreateFromUri(new Uri(viewModel.Url))
+                Source = MediaSource.CreateFromAdaptiveMediaSource(source)
             };
             player.Volume = control.Volume;
             player.VolumeChanged += control.Player_VolumeChanged;
             player.PlaybackSession.PositionChanged += control.PlaybackSession_PositionChanged;
             player.MediaEnded += control.Player_MediaEnded;
             control.Player.SetMediaPlayer(player);
+            control.Player.MediaPlayer.Play();
         }
 
         private void UserControl_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)

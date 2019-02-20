@@ -16,7 +16,7 @@ namespace Shared.ViewModels
         public MediaViewModel(Media media)
         {
             _media = media;
-            Url = media.StreamData.Streams.Last().Url;
+            Url = media.StreamData.Streams.First().Url;
             Id = media.MediaId;
         }
     }
