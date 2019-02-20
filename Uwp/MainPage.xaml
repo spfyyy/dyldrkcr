@@ -19,6 +19,7 @@
             Volume="{Binding Volume, Mode=TwoWay}"
             Visibility="{Binding CurrentMediaViewModel, Converter={StaticResource NullToVisibility}, FallbackValue=Collapsed}"
             CloseCommand="{Binding CloseVideoCommand}"
+            WatchTime="{Binding CurrentMediaViewModel.WatchTime, Mode=TwoWay}"
             Width="640" Height="360" HorizontalAlignment="Right" VerticalAlignment="Bottom" Canvas.ZIndex="1" />
     </Grid>
 </Page>

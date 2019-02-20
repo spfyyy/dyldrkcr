@@ -9,10 +9,15 @@ namespace Shared.ViewModels
 
         public string Url { get; set; }
 
+        public int WatchTime { get; set; }
+
+        public string Id { get; set; }
+
         public MediaViewModel(Media media)
         {
             _media = media;
             Url = media.StreamData.Streams.Last().Url;
+            Id = media.MediaId;
         }
     }
 }

@@ -34,6 +34,13 @@ namespace Uwp.Controls
         }
         public static readonly DependencyProperty CloseCommandProperty = DependencyProperty.Register(nameof(CloseCommand), typeof(ICommand), typeof(CrunchyrollPlayer), null);
 
+        public int WatchTime
+        {
+            get { return (int)GetValue(WatchTimeProperty); }
+            set { SetValue(WatchTimeProperty, value); }
+        }
+        public static readonly DependencyProperty WatchTimeProperty = DependencyProperty.Register(nameof(WatchTime), typeof(int), typeof(CrunchyrollPlayer), null);
+
         public CrunchyrollPlayer()
         {
             InitializeComponent();
@@ -44,6 +51,26 @@ namespace Uwp.Controls
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
             {
                 Volume = sender.Volume;
+            });
+        }
+
+        private async void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+            {
+                WatchTime = (int)sender.Position.TotalSeconds;
+            });
+        }
+
+        private async void Player_MediaEnded(MediaPlayer sender, object args)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+            {
+                if (CloseCommand != null && CloseCommand.CanExecute(null))
+                {
+                    CloseCommand.Execute(null);
+                    Player.IsFullWindow = false;
+                }
             });
         }
 
@@ -63,6 +90,8 @@ namespace Uwp.Controls
             };
             player.Volume = control.Volume;
             player.VolumeChanged += control.Player_VolumeChanged;
+            player.PlaybackSession.PositionChanged += control.PlaybackSession_PositionChanged;
+            player.MediaEnded += control.Player_MediaEnded;
             control.Player.SetMediaPlayer(player);
         }
 
