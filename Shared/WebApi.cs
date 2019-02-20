@@ -77,6 +77,23 @@ namespace Shared
         }
 
         /// <summary>
+        /// Update the watch time for a specific media item.
+        /// </summary>
+        /// <param name="mediaId">The ID of the media item.</param>
+        /// <param name="seconds">The watch time, in seconds.</param>
+        /// <param name="sessionId">The session ID of the current user.</param>
+        /// <returns>An awaitable <see cref="Response"/>.</returns>
+        public static async Task<Response> UpdatePlayhead(string mediaId, int seconds, string sessionId)
+        {
+            var encodedMediaId = HttpUtility.UrlEncode(mediaId);
+            var encodedSessionId = HttpUtility.UrlEncode(sessionId);
+            var url = $"https://api.crunchyroll.com/log.0.json?event=playback_status&media_id={encodedMediaId}&playhead={seconds}&session_id={encodedSessionId}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = await WebRequestAsync<Response>(request);
+            return response;
+        }
+
+        /// <summary>
         /// Helper method for sending a REST API request.
         /// </summary>
         /// <typeparam name="T">The type of object to try and parse from the response.</typeparam>
