@@ -103,6 +103,9 @@ namespace Uwp
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
+
+            // Set the application's current media to null. This should log watch time if the user was watching a video.
+            Ioc.Get<ApplicationViewModel>().CurrentMediaViewModel = null;
             deferral.Complete();
         }
     }

@@ -1,6 +1,5 @@
 ﻿using Shared.Models;
 using Shared.Utilities;
-using System.Diagnostics;
 
 namespace Shared.ViewModels
 {
@@ -17,6 +16,12 @@ namespace Shared.ViewModels
             get { return _currentMediaViewModel; }
             set
             {
+                if (_currentMediaViewModel != null)
+                {
+                    var seconds = _currentMediaViewModel.WatchTime;
+                    var id = _currentMediaViewModel.Id;
+                    UpdateWatchTime(id, seconds);
+                }
                 _currentMediaViewModel = value;
                 NotifyPropertyChanged(nameof(CurrentMediaViewModel));
             }
@@ -79,6 +84,11 @@ namespace Shared.ViewModels
         private void CloseVideo(object _)
         {
             CurrentMediaViewModel = null;
+        }
+
+        private async void UpdateWatchTime(string mediaId, int seconds)
+        {
+            await WebApi.UpdatePlayhead(mediaId, seconds, Session.Data.SessionId);
         }
     }
 }

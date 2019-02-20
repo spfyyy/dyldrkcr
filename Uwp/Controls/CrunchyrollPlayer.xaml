@@ -22,6 +22,6 @@
         <MediaPlayerElement
             x:Name="Player"
             AutoPlay="True"
-            AreTransportControlsEnabled="True" />
+            AreTransportControlsEnabled="True"/>
     </Grid>
 </UserControl>
