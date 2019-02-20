@@ -34,7 +34,7 @@ namespace Uwp
             {
                 return new QueuePageViewModel();
             });
-            Ioc.RegisterSingleton(new ApplicationViewModel());
+            Ioc.RegisterSingleton(new ApplicationViewModel(Ioc.Get<ISettings>()));
             Ioc.Get<ApplicationViewModel>().Start();
 
             InitializeComponent();

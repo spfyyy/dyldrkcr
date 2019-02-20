@@ -1,4 +1,6 @@
 ﻿using Shared.Models;
+using Shared.Utilities;
+using System.Diagnostics;
 
 namespace Shared.ViewModels
 {
@@ -7,6 +9,19 @@ namespace Shared.ViewModels
     /// </summary>
     public class ApplicationViewModel : BaseViewModel
     {
+        private readonly ISettings _settings;
+
+        private MediaViewModel _currentMediaViewModel;
+        public MediaViewModel CurrentMediaViewModel
+        {
+            get { return _currentMediaViewModel; }
+            set
+            {
+                _currentMediaViewModel = value;
+                NotifyPropertyChanged(nameof(CurrentMediaViewModel));
+            }
+        }
+
         private BaseViewModel _currentViewModel;
         public BaseViewModel CurrentViewModel
         {
@@ -18,7 +33,33 @@ namespace Shared.ViewModels
             }
         }
 
+        private double _volume;
+        public double Volume
+        {
+            get { return _volume; }
+            set
+            {
+                _volume = value;
+                _settings.Save(SettingsKey.VOLUME, value.ToString());
+                NotifyPropertyChanged(nameof(Volume));
+            }
+        }
+
         public Session Session { get; set; }
+
+        public RelayCommand CloseVideoCommand { get; set; }
+
+        public ApplicationViewModel(ISettings settings)
+        {
+            _settings = settings;
+            var storedVolume = _settings.Get<string>(SettingsKey.VOLUME);
+            if (storedVolume is null)
+            {
+                storedVolume = "1";
+            }
+            Volume = double.Parse(storedVolume);
+            CloseVideoCommand = new RelayCommand(CanCloseVideo, CloseVideo);
+        }
 
         public void Navigate<T>() where T : BaseViewModel
         {
@@ -28,6 +69,16 @@ namespace Shared.ViewModels
         public void Start()
         {
             Navigate<LaunchPageViewModel>();
+        }
+
+        private bool CanCloseVideo(object _)
+        {
+            return true;
+        }
+
+        private void CloseVideo(object _)
+        {
+            CurrentMediaViewModel = null;
         }
     }
 }

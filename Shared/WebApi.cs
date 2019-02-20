@@ -54,7 +54,7 @@ namespace Shared
         public static async Task<Queue> GetQueueAsync(string sessionId)
         {
             var encodedSessionId = HttpUtility.UrlEncode(sessionId);
-            var url = $"https://api.crunchyroll.com/queue.0.json?session_id={encodedSessionId}&fields=media.media_id%2Cmedia.name%2Cmedia.series_id%2Cmedia.series_name%2Cmedia.description%2Cmedia.premium_only%2Cmedia.screenshot_image%2Cmedia.available_time%2Cmedia.premium_available_time%2Cmedia.premium_available%2Cmedia.episode_number%2Cmedia.duration%2Cmedia.playhead";
+            var url = $"https://api.crunchyroll.com/queue.0.json?session_id={encodedSessionId}&fields=media.media_id%2Cmedia.name%2Cmedia.series_id%2Cmedia.series_name%2Cmedia.description%2Cmedia.premium_only%2Cmedia.screenshot_image%2Cmedia.episode_number%2Cmedia.duration%2Cmedia.playhead";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var queue = await WebRequestAsync<Queue>(request);
             return queue;
@@ -70,7 +70,7 @@ namespace Shared
         {
             var encodedMediaId = HttpUtility.UrlEncode(mediaId);
             var encodedSessionId = HttpUtility.UrlEncode(sessionId);
-            var url = $"https://api.crunchyroll.com/info.0.json?media_id={encodedMediaId}&session_id={encodedSessionId}&fields=media.media_id%2Cmedia.name%2Cmedia.series_id%2Cmedia.series_name%2Cmedia.collection_id%2Cmedia.duration%2Cmedia.playhead%2Cmedia.stream_data%2Cmedia.bif_url%2Cmedia.episode_number";
+            var url = $"https://api.crunchyroll.com/info.0.json?media_id={encodedMediaId}&session_id={encodedSessionId}&fields=media.media_id%2Cmedia.name%2Cmedia.series_id%2Cmedia.series_name%2Cmedia.collection_id%2Cmedia.duration%2Cmedia.playhead%2Cmedia.stream_data%2Cmedia.episode_number";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var info = await WebRequestAsync<MediaInfo>(request);
             return info;
