@@ -8,7 +8,11 @@ namespace Uwp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return (value as bool?).Value ? Visibility.Visible : Visibility.Collapsed;
+            if (parameter is null)
+            {
+                return (value as bool?).Value ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return (value as bool?).Value ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

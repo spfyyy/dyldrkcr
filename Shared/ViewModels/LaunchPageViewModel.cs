@@ -1,37 +1,84 @@
-﻿using System;
+﻿using Shared.Utilities;
+using System;
 
 namespace Shared.ViewModels
 {
     public class LaunchPageViewModel : BaseViewModel
     {
+        private readonly ApplicationState _appState;
+        private readonly INavigation _navigation;
         private readonly ISettings _settings;
 
-        public LaunchPageViewModel(ISettings settings)
+        private bool _startingSession = false;
+        public bool StartingSession
         {
-            _settings = settings;
-            StartSession();
+            get { return _startingSession; }
+            set
+            {
+                _startingSession = value;
+                NotifyPropertyChanged(nameof(StartingSession));
+                StartSessionCommand.NotifyCanExecuteChanged();
+            }
         }
 
-        private async void StartSession()
+        private string _errorMessage = "";
+        public string ErrorMessage
         {
-            // Retrieve the device ID. Generate one if there isn't one yet.
-            var deviceId = _settings.Get<string>(SettingsKey.DEVICE_ID);
-            if (deviceId is null)
+            get { return _errorMessage; }
+            set
             {
-                deviceId = Guid.NewGuid().ToString();
+                _errorMessage = value;
+                NotifyPropertyChanged(nameof(ErrorMessage));
             }
-            // Start a session.
-            var authToken = _settings.Get<string>(SettingsKey.AUTH_TOKEN);
-            Application.Session = await WebApi.StartSessionAsync(deviceId, authToken);
-            _settings.Save(SettingsKey.AUTH_TOKEN, Application.Session.Data.Auth);
-            if (authToken is null)
+        }
+
+        public RelayCommand StartSessionCommand { get; set; }
+
+        public LaunchPageViewModel(ApplicationState appState, INavigation navigation, ISettings settings)
+        {
+            _appState = appState;
+            _navigation = navigation;
+            _settings = settings;
+            StartSessionCommand = new RelayCommand(CanStartSession, StartSession);
+        }
+
+        private bool CanStartSession(object _)
+        {
+            return !StartingSession;
+        }
+
+        private async void StartSession(object _)
+        {
+            ErrorMessage = "";
+            StartingSession = true;
+            try
             {
-                Application.Navigate<LoginPageViewModel>();
+                //Retrieve the device ID. Generate one if there isn't one yet.
+                var deviceId = _settings.Get<string>(SettingsKey.DEVICE_ID);
+                if (deviceId is null)
+                {
+                    deviceId = Guid.NewGuid().ToString();
+                    _settings.Save(SettingsKey.DEVICE_ID, deviceId);
+                }
+                // Start a session.
+                var authToken = _settings.Get<string>(SettingsKey.AUTH_TOKEN);
+                _appState.Session = await WebApi.StartSessionAsync(deviceId, authToken);
+                _settings.Save(SettingsKey.AUTH_TOKEN, _appState.Session.AuthorizationToken);
+                // If session is authenticated, go to queue. Otherwise go to login page.
+                if (_appState.Session.User is null)
+                {
+                    await _navigation.Navigate<LoginPageViewModel>(null);
+                }
+                else
+                {
+                    await _navigation.Navigate<QueuePageViewModel>(null);
+                }
             }
-            else
+            catch (Exception e)
             {
-                Application.Navigate<QueuePageViewModel>();
+                ErrorMessage = e.Message;
             }
+            StartingSession = false;
         }
     }
 }

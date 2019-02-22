@@ -1,5 +1,4 @@
-﻿using Shared.ViewModels;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Input;
 using Windows.Media.Core;
@@ -15,12 +14,12 @@ namespace Uwp.Controls
     /// </summary>
     public sealed partial class CrunchyrollPlayer : UserControl
     {
-        public MediaViewModel ViewModel
+        public string Url
         {
-            get { return (MediaViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
+            get { return (string)GetValue(UrlProperty); }
+            set { SetValue(UrlProperty, value); }
         }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MediaViewModel), typeof(CrunchyrollPlayer), new PropertyMetadata(null, OnViewModelChanged));
+        public static readonly DependencyProperty UrlProperty = DependencyProperty.Register(nameof(Url), typeof(string), typeof(CrunchyrollPlayer), new PropertyMetadata(null, OnUrlChanged));
 
         public double Volume
         {
@@ -29,19 +28,33 @@ namespace Uwp.Controls
         }
         public static readonly DependencyProperty VolumeProperty = DependencyProperty.Register(nameof(Volume), typeof(double), typeof(CrunchyrollPlayer), null);
 
-        public ICommand CloseCommand
-        {
-            get { return (ICommand)GetValue(CloseCommandProperty); }
-            set { SetValue(CloseCommandProperty, value); }
-        }
-        public static readonly DependencyProperty CloseCommandProperty = DependencyProperty.Register(nameof(CloseCommand), typeof(ICommand), typeof(CrunchyrollPlayer), null);
-
         public int WatchTime
         {
             get { return (int)GetValue(WatchTimeProperty); }
             set { SetValue(WatchTimeProperty, value); }
         }
         public static readonly DependencyProperty WatchTimeProperty = DependencyProperty.Register(nameof(WatchTime), typeof(int), typeof(CrunchyrollPlayer), null);
+
+        public bool StreamOpen
+        {
+            get { return (bool)GetValue(StreamOpenProperty); }
+            set { SetValue(StreamOpenProperty, value); }
+        }
+        public static readonly DependencyProperty StreamOpenProperty = DependencyProperty.Register(nameof(StreamOpen), typeof(bool), typeof(CrunchyrollPlayer), new PropertyMetadata(true, OnStreamOpenChanged));
+
+        public bool Playing
+        {
+            get { return (bool)GetValue(PlayingProperty); }
+            set { SetValue(PlayingProperty, value); }
+        }
+        public static readonly DependencyProperty PlayingProperty = DependencyProperty.Register(nameof(Playing), typeof(bool), typeof(CrunchyrollPlayer), null);
+
+        public ICommand EndedCommand
+        {
+            get { return (ICommand)GetValue(EndedCommandProperty); }
+            set { SetValue(EndedCommandProperty, value); }
+        }
+        public static readonly DependencyProperty EndedCommandProperty = DependencyProperty.Register(nameof(EndedCommand), typeof(ICommand), typeof(CrunchyrollPlayer), null);
 
         public CrunchyrollPlayer()
         {
@@ -56,7 +69,7 @@ namespace Uwp.Controls
             });
         }
 
-        private async void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
+        private async void Player_PositionChanged(MediaPlaybackSession sender, object args)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
             {
@@ -68,25 +81,36 @@ namespace Uwp.Controls
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
             {
-                if (CloseCommand != null && CloseCommand.CanExecute(null))
+                if (EndedCommand.CanExecute(null))
                 {
-                    CloseCommand.Execute(null);
-                    Player.IsFullWindow = false;
+                    EndedCommand.Execute(null);
                 }
             });
         }
 
-        private static async void OnViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        private static void OnStreamOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
         {
             var control = d as CrunchyrollPlayer;
-            var viewModel = args.NewValue as MediaViewModel;
-            if (viewModel is null)
+            var open = (args.NewValue is null) ? false : (args.NewValue as bool?).Value;
+            if (!open)
+            {
+                control.Player.IsFullWindow = false;
+                control.Player.MediaPlayer.Pause();
+                control.Player.MediaPlayer.Source = null;
+            }
+        }
+
+        private static async void OnUrlChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        {
+            var control = d as CrunchyrollPlayer;
+            var url = args.NewValue as string;
+            if (url is null)
             {
                 control.Player.MediaPlayer.Source = null;
                 control.Player.SetMediaPlayer(null);
                 return;
             }
-            var sourceResult = await AdaptiveMediaSource.CreateFromUriAsync(new Uri(viewModel.Url));
+            var sourceResult = await AdaptiveMediaSource.CreateFromUriAsync(new Uri(url));
             var source = sourceResult.MediaSource;
             source.DesiredMinBitrate = source.AvailableBitrates.Max();
             var player = new MediaPlayer
@@ -95,20 +119,10 @@ namespace Uwp.Controls
             };
             player.Volume = control.Volume;
             player.VolumeChanged += control.Player_VolumeChanged;
-            player.PlaybackSession.PositionChanged += control.PlaybackSession_PositionChanged;
+            player.PlaybackSession.PositionChanged += control.Player_PositionChanged;
             player.MediaEnded += control.Player_MediaEnded;
             control.Player.SetMediaPlayer(player);
             control.Player.MediaPlayer.Play();
-        }
-
-        private void UserControl_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            CloseButton.Visibility = Visibility.Visible;
-        }
-
-        private void UserControl_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            CloseButton.Visibility = Visibility.Collapsed;
         }
     }
 }

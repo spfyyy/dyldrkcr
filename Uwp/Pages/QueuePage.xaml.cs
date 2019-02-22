@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Shared.ViewModels;
+using Windows.UI.Xaml.Controls;
 
 namespace Uwp.Pages
 {
@@ -6,6 +7,7 @@ namespace Uwp.Pages
     {
         public QueuePage()
         {
+            DataContext = Ioc.Resolve<QueuePageViewModel>();
             InitializeComponent();
         }
     }

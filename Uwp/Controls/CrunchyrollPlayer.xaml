@@ -6,22 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400"
-    PointerEntered="UserControl_PointerEntered"
-    PointerExited="UserControl_PointerExited">
+    d:DesignWidth="400">
 
-    <Grid>
-        <Button
-            x:Name="CloseButton"
-            Canvas.ZIndex="1"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="X"
-            Command="{x:Bind CloseCommand}"
-            Visibility="Collapsed"/>
-        <MediaPlayerElement
+    <MediaPlayerElement
             x:Name="Player"
             AutoPlay="True"
             AreTransportControlsEnabled="True"/>
-    </Grid>
 </UserControl>

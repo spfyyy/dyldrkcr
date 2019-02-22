@@ -2,8 +2,11 @@
 
 namespace Shared.Models
 {
-    public class Response
+    public class Response<T>
     {
+        [JsonProperty("data")]
+        public T Data { get; set; }
+
         [JsonProperty("error")]
         public bool Error { get; set; }
 

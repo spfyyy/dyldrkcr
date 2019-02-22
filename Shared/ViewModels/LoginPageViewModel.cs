@@ -1,12 +1,15 @@
 ﻿using Shared.Utilities;
+using System;
 
 namespace Shared.ViewModels
 {
     public class LoginPageViewModel : BaseViewModel
     {
+        private readonly ApplicationState _appState;
         private readonly ISettings _settings;
+        private readonly INavigation _navigation;
 
-        private bool _loggingIn;
+        private bool _loggingIn = false;
         private bool LoggingIn
         {
             get { return _loggingIn; }
@@ -41,32 +44,48 @@ namespace Shared.ViewModels
             }
         }
 
-        public LoginPageViewModel(ISettings settings)
+        private string _loginMessage = "";
+        public string LoginMessage
         {
-            _settings = settings;
-            LoginCommand = new RelayCommand(CanLogin, Login);
-            LoggingIn = false;
+            get { return _loginMessage; }
+            set
+            {
+                _loginMessage = value;
+                NotifyPropertyChanged(nameof(LoginMessage));
+            }
         }
 
         public RelayCommand LoginCommand { get; set; }
+
+        public LoginPageViewModel(ApplicationState appState, ISettings settings, INavigation navigation)
+        {
+            _appState = appState;
+            _settings = settings;
+            _navigation = navigation;
+            LoginCommand = new RelayCommand(CanLogin, Login);
+        }
+
         private bool CanLogin(object _)
         {
             return Account.Length > 0 && Password.Length > 0 && !LoggingIn;
         }
+
         private async void Login(object _)
         {
             LoggingIn = true;
-            var login = await WebApi.LoginAsync(Account, Password, Application.Session.Data.SessionId);
-            if (!login.Error)
+            LoginMessage = "";
+            try
             {
-                _settings.Save(SettingsKey.AUTH_TOKEN, login.Data.Auth);
-                Application.Session.Data.User = login.Data.User;
-                Application.Navigate<QueuePageViewModel>();
+                var login = await WebApi.LoginAsync(Account, Password, _appState.Session.Id);
+                _settings.Save(SettingsKey.AUTH_TOKEN, login.AuthorizationToken);
+                _appState.Session.User = login.User;
+                await _navigation.Navigate<QueuePageViewModel>(null);
             }
-            else
+            catch (Exception e)
             {
-                LoggingIn = false;
+                LoginMessage = e.Message;
             }
+            LoggingIn = false;
         }
     }
 }

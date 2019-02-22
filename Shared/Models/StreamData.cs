@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace Shared.Models
@@ -14,17 +13,5 @@ namespace Shared.Models
 
         [JsonProperty("streams")]
         public List<Stream> Streams { get; set; }
-
-        public class Stream
-        {
-            [JsonProperty("quality")]
-            public string Quality { get; set; }
-
-            [JsonProperty("expires")]
-            public DateTime Expires { get; set; }
-
-            [JsonProperty("url")]
-            public string Url { get; set; }
-        }
     }
 }

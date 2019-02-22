@@ -1,6 +1,5 @@
-﻿using Shared;
-using Shared.ViewModels;
-using System;
+﻿using System;
+using Uwp.Pages;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -20,23 +19,6 @@ namespace Uwp
         /// </summary>
         public App()
         {
-            // Configure services.
-            Ioc.RegisterSingleton<ISettings>(new UwpSettings());
-            Ioc.RegisterScoped(() =>
-            {
-                return new LaunchPageViewModel(Ioc.Get<ISettings>());
-            });
-            Ioc.RegisterScoped(() =>
-            {
-                return new LoginPageViewModel(Ioc.Get<ISettings>());
-            });
-            Ioc.RegisterScoped(() =>
-            {
-                return new QueuePageViewModel();
-            });
-            Ioc.RegisterSingleton(new ApplicationViewModel(Ioc.Get<ISettings>()));
-            Ioc.Get<ApplicationViewModel>().Start();
-
             InitializeComponent();
             Suspending += OnSuspending;
         }
@@ -75,7 +57,7 @@ namespace Uwp
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    rootFrame.Navigate(typeof(LaunchPage), e.Arguments);
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
@@ -103,9 +85,6 @@ namespace Uwp
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
-
-            // Set the application's current media to null. This should log watch time if the user was watching a video.
-            Ioc.Get<ApplicationViewModel>().CurrentMediaViewModel = null;
             deferral.Complete();
         }
     }
