@@ -9,16 +9,28 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <TextBox Text="{Binding Account, Mode=TwoWay}" />
-        <PasswordBox Password="{Binding Password, Mode=TwoWay}" Grid.Column="1" />
-        <Button Content="Login" Command="{Binding LoginCommand}" Grid.Column="2" />
+        
+        <TextBox
+            Text="{Binding Account, Mode=TwoWay}" />
+        <PasswordBox
+            Password="{Binding Password, Mode=TwoWay}"
+            Grid.Column="1"/>
+        <Button
+            Content="Login"
+            Command="{Binding LoginCommand}"
+            Grid.Column="2"/>
+        <TextBlock
+            Text="{Binding LoginMessage}"
+            Grid.Row="1"
+            Grid.ColumnSpan="3"/>
     </Grid>
 </Page>

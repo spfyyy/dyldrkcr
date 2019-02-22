@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Shared.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shared.ViewModels
 {
     public class QueuePageViewModel : BaseViewModel
     {
-        private List<QueueItemViewModel> _queue;
-        public List<QueueItemViewModel> Queue
+        private readonly ApplicationState _appState;
+        private readonly INavigation _navigation;
+
+        private List<MediaViewModel> _queue;
+        public List<MediaViewModel> Queue
         {
             get { return _queue; }
             set
@@ -16,26 +22,78 @@ namespace Shared.ViewModels
             }
         }
 
-        private QueueItemViewModel _selectedItem;
-        public QueueItemViewModel SelectedItem
+        private MediaViewModel _selectedItem;
+        public MediaViewModel SelectedItem
         {
             get { return _selectedItem; }
             set
             {
                 _selectedItem = value;
                 NotifyPropertyChanged(nameof(SelectedItem));
+                WatchCommand.NotifyCanExecuteChanged();
             }
         }
 
-        public QueuePageViewModel()
+        private bool _loadingQueue = false;
+        public bool LoadingQueue
         {
-            Fetch();
+            get { return _loadingQueue; }
+            set
+            {
+                _loadingQueue = value;
+                NotifyPropertyChanged(nameof(LoadingQueue));
+            }
         }
 
-        public async void Fetch()
+        private string _errorMessage = "";
+        public string ErrorMessage
         {
-            var queue = await WebApi.GetQueueAsync(Application.Session.Data.SessionId);
-            Queue = queue.Data.Select(q => new QueueItemViewModel(q)).ToList();
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public RelayCommand WatchCommand { get; set; }
+
+        public QueuePageViewModel(ApplicationState appState, INavigation navigation)
+        {
+            _appState = appState;
+            _navigation = navigation;
+            WatchCommand = new RelayCommand(CanWatch, Watch);
+        }
+
+        private bool CanWatch(object _)
+        {
+            return SelectedItem != null;
+        }
+
+        private async void Watch(object _)
+        {
+            await _navigation.Navigate<VideoPageViewModel>(SelectedItem.Id);
+        }
+
+        public override async Task InitializeAsync()
+        {
+            await InitializeAsync(null);
+        }
+
+        public override async Task InitializeAsync(object _)
+        {
+            LoadingQueue = true;
+            ErrorMessage = "";
+            try
+            {
+                var queue = await WebApi.GetQueueAsync(_appState.Session.Id);
+                Queue = queue.Select(item => new MediaViewModel(item)).ToList();
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+            }
+            LoadingQueue = false;
         }
     }
 }

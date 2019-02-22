@@ -8,5 +8,32 @@
         <converters:PercentageToWidthDescriptionConverter x:Key="PercentToWidth"/>
         <converters:ViewModelToPageConverter x:Key="ViewModelToPage"/>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+
+        <DataTemplate x:Key="Media">
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition
+                        Height="*"/>
+                    <RowDefinition
+                        Height="6"/>
+                </Grid.RowDefinitions>
+                
+                <Image
+                    Source="{Binding ThumbnailUrl}"
+                    Width="400"/>
+                <Grid
+                    Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="{Binding WatchPercentage, Converter={StaticResource PercentToWidth}, ConverterParameter=False}"/>
+                        <ColumnDefinition
+                            Width="{Binding WatchPercentage, Converter={StaticResource PercentToWidth}, ConverterParameter=True}"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Rectangle
+                        Fill="{ThemeResource SystemControlHighlightAccentBrush}"/>
+                </Grid>
+            </Grid>
+        </DataTemplate>
     </Application.Resources>
 </Application>

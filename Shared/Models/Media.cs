@@ -1,15 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
 
 namespace Shared.Models
 {
     public class Media
     {
         [JsonProperty("media_id")]
-        public string MediaId { get; set; }
-
-        [JsonProperty("collection_id")]
-        public string CollectionId { get; set; }
+        public string Id { get; set; }
 
         [JsonProperty("series_id")]
         public string SeriesId { get; set; }
@@ -26,15 +22,6 @@ namespace Shared.Models
         [JsonProperty("screenshot_image")]
         public Images ScreenshotImage { get; set; }
 
-        [JsonProperty("url")]
-        public string Url { get; set; }
-
-        [JsonProperty("availability_notes")]
-        public string AvailabilityNotes { get; set; }
-
-        [JsonProperty("created")]
-        public DateTime Created { get; set; }
-
         [JsonProperty("duration")]
         public int Duration { get; set; }
 
@@ -44,10 +31,10 @@ namespace Shared.Models
         [JsonProperty("premium_only")]
         public bool PremiumOnly { get; set; }
 
-        [JsonProperty("playhead")]
-        public int Playhead { get; set; }
-
         [JsonProperty("stream_data")]
         public StreamData StreamData { get; set; }
+
+        [JsonProperty("playhead")]
+        public int Playhead { get; set; }
     }
 }
